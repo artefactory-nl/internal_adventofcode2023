@@ -1,5 +1,8 @@
 # Artefact's Advent of Code 2023
 
+![Advent of Code 2023](https://cdn.thenewstack.io/media/2021/12/521cd034-advent-of-code-2021.jpg)
+
+
 Welcome to Artefact's Advent of Code 2023! This is a unique opportunity for our engineering team to challenge themselves with daily programming puzzles throughout December. 
 
 Each day, a new puzzle is unlocked - solve them at your own pace, learn new programming concepts, and improve your problem-solving skills!
