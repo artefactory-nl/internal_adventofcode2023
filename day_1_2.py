@@ -1,7 +1,7 @@
 import regex as re
 
-
-from day_1_1 import read_input, solve
+from day_1_1 import solve
+from utils import read_input
 
 
 DIGIT_MAPPING = {
@@ -34,6 +34,6 @@ def apply_digit_mapping(lines: list[str], mapping: dict[str, str]) -> list[str]:
 
 
 if __name__ == "__main__":
-    lines = read_input('input_day_1-1.txt')
+    lines = read_input('input_day_1.txt')
     lines = apply_digit_mapping(lines, DIGIT_MAPPING)
     print(solve(lines))

@@ -1,13 +1,12 @@
+from utils import read_input
+
+
 def is_int(char: str) -> bool: 
     try:
         int(char)
         return True
     except ValueError:
         return False
-    
-def read_input(path: str) -> list[str]:
-    with open(path, 'r') as file:
-        return [line.replace("\n", "") for line in file.readlines()]
 
 def solve(lines: list[str]) -> int:
     total_sum = 0
@@ -32,5 +31,5 @@ def solve(lines: list[str]) -> int:
     return total_sum
 
 if __name__ == '__main__':
-    lines = read_input('input_day_1-1.txt')
+    lines = read_input('input_day_1.txt')
     print(solve(lines))
