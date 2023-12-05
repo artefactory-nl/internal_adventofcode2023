@@ -6,7 +6,10 @@ SYMBOLS = ["*"]
 
 
 def extract_adjacent_numbers_to_symbols(lines: list[str], around_positions: list[dict[str, list[tuple[int, int]]]]) -> dict[str, list[int]]:
-    """Returns a dictionary containing the numbers adjacent to a symbol."""
+    """Returns a dictionary containing the numbers adjacent to a symbol.
+    
+    The key is the coordinates of the symbol, and the value is a list of numbers adjacent to the symbol.
+    """
     numbers_adjacent_to_symbols = {}
     for around_position in around_positions:
         for number, coords_to_check in around_position.items():

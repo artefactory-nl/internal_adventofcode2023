@@ -4,6 +4,10 @@ from utils import read_input
 
 
 def extract_symbols(lines: list[str]) -> list[str]:
+    """Returns a list of symbols that are in the grid.
+    
+    Symbols are characters that are not numbers or dots.
+    """
     symbols = []
     for line in lines:
         for char in line:
@@ -12,7 +16,10 @@ def extract_symbols(lines: list[str]) -> list[str]:
     return symbols
 
 def find_numbers_positions(lines: list[str]) -> list[dict[str, list[tuple[int, int]]]]:
-    """Returns a list of dictionaries, each dictionary contains the positions of a number in the grid."""
+    """Returns a list of dictionaries containing the positions of each digit that composes the number.
+    
+    Each dictionary contains the string number as key, and as value a list of tuples containing the coordinates of each digit.
+    """
     positions = []
     for line_index, line in enumerate(lines):
         digits_in_line = re.finditer(r"\d+", line)
@@ -21,7 +28,10 @@ def find_numbers_positions(lines: list[str]) -> list[dict[str, list[tuple[int, i
     return positions
 
 def extract_possible_coordinates(coordinates: tuple[int, int], max_x: int, max_y: int) -> list[tuple[int, int]]:
-    """Returns a list of coordinates that are around the given coordinates."""
+    """Returns a list of coordinates that are around the given coordinates.
+    
+    The coordinates are extracted from a grid of size max_x * max_y.
+    """
     x, y = coordinates
     possible_coordinates = []
     for i in [-1, 0, 1]:
@@ -32,7 +42,7 @@ def extract_possible_coordinates(coordinates: tuple[int, int], max_x: int, max_y
     return possible_coordinates
 
 def extract_around_positions(positions: list[dict[str, list[tuple[int, int]]]], max_x: int, max_y: int) -> list[dict[str, list[tuple[int, int]]]]:
-    """Returns a list of dictionaries, each dictionary contains the positions of a number in the grid."""
+    """Returns a list of dictionaries, each dictionary contains the positions around a number in the grid."""
     positions_to_check = []
     for position in positions:
         for number, positions_list in position.items():
