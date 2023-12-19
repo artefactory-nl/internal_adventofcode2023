@@ -4,7 +4,7 @@ def aux_find_part_numbers_in_adjacent_line(input_line: str, gear_location: int) 
     right_slice_including_gear_location = input_line[gear_location:]
     left_slice_excluding_gear_location = input_line[:gear_location][::-1]
     
-    right_find_part_number_regex = "^([^0-9]{0,1})(\d*)"
+    right_find_part_number_regex = "^(\D{0,1})(\d*)"
     left_find_part_number_regex = "^(\d*)"
 
     right_lookahead_part_number = re.search(right_find_part_number_regex, right_slice_including_gear_location).group()
