@@ -10,6 +10,7 @@ def return_game_number_or_zero(text_string: str) -> int:
     for game in game_individual_scores:
         game_score_per_ball_color = re.findall(number_of_colored_balls_in_game, game)
         for number_of_balls, ball_color in game_score_per_ball_color:
+            # Impossible games have a value of 0
             if bag_cubes[ball_color] < int(number_of_balls):
                 return 0
             else:
@@ -17,7 +18,7 @@ def return_game_number_or_zero(text_string: str) -> int:
         
     return int(game_number)
 
-input_file = open("inputs/day1/problem-2.txt")
+input_file = open("inputs/problem-2.txt")
 input_lines = input_file.read().splitlines()
 
 answer = sum([return_game_number_or_zero(line) for line in input_lines])

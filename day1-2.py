@@ -9,9 +9,10 @@ def extract_calibration_value(text_string: str) -> int:
     first_digit = regex.findall(regex_string, text_string, overlapped=True)[0]
     last_digit = regex.findall(regex_string, text_string, overlapped=True)[-1]
 
+    # Return number as is if it is an int, otherwise get the value in the numbers_to_text dict
     return int(numbers_to_text_dict.get(first_digit, first_digit) + numbers_to_text_dict.get(last_digit, last_digit))
 
-input_file = open("inputs/day1/problem-1.txt")
+input_file = open("inputs/problem-1.txt")
 input_lines = input_file.read().splitlines()
 
 answer = sum([extract_calibration_value(line) for line in input_lines])

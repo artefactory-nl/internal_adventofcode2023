@@ -17,7 +17,7 @@ def return_product_of_minimum_balls_per_color(text_string: str) -> int:
         
     return np.prod(list(bag_cubes.values()))
 
-input_file = open("inputs/day1/problem-2.txt")
+input_file = open("inputs/problem-2.txt")
 input_lines = input_file.read().splitlines()
 
 answer = sum([return_product_of_minimum_balls_per_color(line) for line in input_lines])
