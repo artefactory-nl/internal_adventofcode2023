@@ -1,5 +1,4 @@
 import re
-import numpy as np
 
 def return_part_numbers(input_lines: list[str]) -> int:
     number_lines = len(input_lines)

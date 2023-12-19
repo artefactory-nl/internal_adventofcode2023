@@ -1,5 +1,4 @@
 import re
-import numpy as np
 
 def aux_find_part_numbers_in_adjacent_line(input_line: str, gear_location: int) -> list[str]:
     right_slice_including_gear_location = input_line[gear_location:]
