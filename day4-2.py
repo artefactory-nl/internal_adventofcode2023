@@ -1,6 +1,6 @@
 import re
 
-def calculate_total_number_scratchcards(input_lines: list[str]) -> int:
+def calculate_total_number_scratchcards(input_lines: list[str]) -> list[int]:
     card_regex = r"Card +(\d+): +([0-9 ]+)\|([0-9 ]+)"
     split_card_nums_string = lambda card_nums: list(map(int, re.split(" +", card_nums)))
     card_components_matches = [re.search(card_regex, line) for line in input_lines]
