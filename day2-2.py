@@ -1,5 +1,5 @@
 import re
-import numpy as np
+from functools import reduce
 
 def return_product_of_minimum_balls_per_color(text_string: str) -> int:
     bag_cubes = {"red": 0, "green": 0, "blue": 0}
@@ -15,11 +15,11 @@ def return_product_of_minimum_balls_per_color(text_string: str) -> int:
             else:
                 continue
         
-    return np.prod(list(bag_cubes.values()))
+    return reduce(lambda a, b: a*b, bag_cubes.values())
 
 input_file = open("inputs/problem-2.txt")
 input_lines = input_file.read().splitlines()
 
 answer = sum([return_product_of_minimum_balls_per_color(line) for line in input_lines])
-
 print(answer)
+print(end-start)
