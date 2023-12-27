@@ -1,5 +1,4 @@
 import re
-from tqdm import tqdm
 from typing import Mapping
 
 def process_seeds(raw_seeds: str) -> Mapping[str, int]:
