@@ -1,5 +1,6 @@
 import re
 from functools import reduce
+import operator
 
 def return_product_of_minimum_balls_per_color(text_string: str) -> int:
     bag_cubes = {"red": 0, "green": 0, "blue": 0}
@@ -15,7 +16,7 @@ def return_product_of_minimum_balls_per_color(text_string: str) -> int:
             else:
                 continue
         
-    return reduce(lambda a, b: a*b, bag_cubes.values())
+    return reduce(operator.mul, bag_cubes.values())
 
 input_file = open("inputs/problem-2.txt")
 input_lines = input_file.read().splitlines()

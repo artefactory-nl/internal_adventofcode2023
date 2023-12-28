@@ -1,5 +1,6 @@
 from functools import reduce
 from itertools import starmap
+import operator
 import re
 
 def parse_data(lines: list[str]) -> list[tuple[int]]:
@@ -18,5 +19,5 @@ input_file = open("inputs/problem-6.txt")
 input_lines = input_file.read().splitlines()
 parsed_input = parse_data(input_lines)
 
-answer = reduce(lambda a, b: a*b, starmap(number_of_ways_to_beat_record, parsed_input))
+answer = reduce(operator.mul, starmap(number_of_ways_to_beat_record, parsed_input))
 print(answer)
