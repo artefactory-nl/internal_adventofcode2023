@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from functools import total_ordering
 from typing import Self, final
 
@@ -17,6 +17,7 @@ class BaseCard:
     
     @abstractmethod
     def get_numerical_value(self) -> int:
+        raise NotImplementedError("get_numerical_value() not implemented")
         return len(self.possible_ranks.default_factory()) - (self.possible_ranks.default_factory().index(self.rank))
     
     @final

@@ -34,7 +34,6 @@ class BaseCombination:
     def _perform_comparison_between_combinations(self, other: Self, operation: str) -> bool:
         pass
 
-
     @final
     def get_priority_of_combination(self) -> int:
         return len(self.possible_combinations) - self.possible_combinations.index(self.get_type())

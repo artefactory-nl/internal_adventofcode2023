@@ -1,11 +1,13 @@
 from itertools import starmap
 from typing import Iterable
 from objects.day_seven.part_one.card import Card
-from objects.day_seven.hand import Hand
+from objects.day_seven.part_one.combination import Combination
+from objects.day_seven.part_one.hand import Hand
+
         
 def parse_hand_and_bids(lines: list[str]) -> int:
     raw_cards_and_bids = [tuple(line.split(" ")) for line in lines]
-    make_hand = lambda cards: Hand(cards=[Card(rank=rank) for rank in cards])
+    make_hand = lambda cards: Hand(cards=[Card(rank=rank) for rank in cards], make_combination=Combination)
     make_hand_and_bid = lambda cards, bid: (make_hand(cards=cards), int(bid))
     return starmap(make_hand_and_bid, raw_cards_and_bids)
 

@@ -11,3 +11,6 @@ class Card(BaseCard):
         super().__post_init__()
         if self.rank not in self.possible_ranks.default_factory():
             raise ValueError("Provided card value does not exist in a poker deck.")
+
+    def get_numerical_value(self) -> int:
+        return len(self.possible_ranks.default_factory()) - (self.possible_ranks.default_factory().index(self.rank))
