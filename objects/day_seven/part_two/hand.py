@@ -1,13 +1,12 @@
 from dataclasses import dataclass, field
 from functools import total_ordering
 from typing import Self
-from objects.day_seven.part_one.card import Card
-from objects.day_seven.part_one.combination import Combination
+from objects.day_seven.part_two.card import Card
+from objects.day_seven.base_hand import BaseHand
 
 @dataclass(frozen=True)
 @total_ordering
-class Hand:
-    cards: list[Card]
+class Hand(BaseHand):
     possible_hands: list[str] = field(
         init=False,
         default_factory=lambda: [
@@ -22,29 +21,57 @@ class Hand:
     )
     
     def __post_init__(self):
+        super().__post_init__()
         if len(self.cards) != 5:
             raise ValueError("Provided a number of cards different than 5.")
     
     def get_highest_combination(self) -> str:
-        ranks_in_hand = sorted([card.get_rank() for card in self.cards])
-        for card_rank in dict.fromkeys(ranks_in_hand):
-            if ranks_in_hand.count(card_rank) in [4, 5]: return Combination([Card(card_rank)] * ranks_in_hand.count(card_rank)) # 4/5 of a kind
-            if ranks_in_hand.count(card_rank) == 3:
-                if ranks_in_hand.count(ranks_in_hand[-1]) == 2:
-                    return Combination(cards=[Card(rank=card_rank)] * 3 + [Card(rank=ranks_in_hand[-1])] * 2) # Full house
-                else: return Combination(cards=[Card(rank=card_rank)] * 3) # 3 of a kind
-            if ranks_in_hand.count(card_rank) == 2:
-                if ranks_in_hand.count(ranks_in_hand[-1]) == 3:
-                    return Combination(cards=[Card(rank=card_rank)] * 2 + [Card(rank=ranks_in_hand[-1])] * 3) # Full house
-                # Check if any of the other ranks is present twice in the hand to determine combination value
-                remaining_card_ranks = ranks_in_hand[ranks_in_hand.index(card_rank)+2:]
-                ranks_excluding_current_card = filter(lambda rank: rank != card_rank, dict.fromkeys(ranks_in_hand))
-                for rank in ranks_excluding_current_card:
-                    if remaining_card_ranks.count(rank) == 2:
-                        return Combination(cards=[Card(rank=card_rank)] * 2 + [Card(rank=rank)] * 2) # Double pair
-                return Combination(cards=[Card(rank=card_rank)] * 2) # Single pair
-        max_rank = max(self.cards).get_rank()
-        return Combination(cards=[Card(rank=max_rank)])
+        cards_in_hand = sorted([card for card in self.cards], key=lambda card: card.get_numerical_value())
+        ranks_in_hand = [card.get_rank() for card in cards_in_hand]
+
+        def sort_by_count_and_dedup(card_ranks: list[str], slice_ix=None) -> list[str]:
+            count_cards = lambda card_rank: (
+                card_ranks.count(card_rank), Card(rank=card_rank).get_numerical_value())
+            return sorted(dict.fromkeys(card_ranks[slice_ix:]), key=count_cards, reverse=True)
+
+        ## SPECIAL CASE ONLY IF CARD IS J ##
+        card_rank = ranks_in_hand[0]
+        if card_rank == "J":
+            if ranks_in_hand.count(card_rank) in [4, 5]: 
+                return self.make_combination(cards=cards_in_hand)
+            elif ranks_in_hand.count(card_rank) == 3:
+                if len(dict.fromkeys(ranks_in_hand[3:])) == 1:
+                    return self.make_combination(cards=cards_in_hand)
+                else: return self.make_combination(cards=cards_in_hand[:3]+cards_in_hand[-1:])
+            elif ranks_in_hand.count(card_rank) == 2:
+                if len(dict.fromkeys(ranks_in_hand[2:])) == 1:
+                    return self.make_combination(cards=cards_in_hand)
+                card_rank_left = sort_by_count_and_dedup(card_ranks=ranks_in_hand, slice_ix=2)[0]
+                if ranks_in_hand.count(card_rank_left) == 3:
+                    return self.make_combination(cards=cards_in_hand)
+                if ranks_in_hand.count(card_rank_left) == 2:
+                    return self.make_combination(cards=cards_in_hand[:2]+[Card(rank=card_rank_left)]*2)
+                return self.make_combination(cards=cards_in_hand[:2]+cards_in_hand[-1:])
+            else:
+                card_rank_left = sort_by_count_and_dedup(card_ranks=ranks_in_hand, slice_ix=2)[0]
+                try:
+                    next_card_rank_left = sort_by_count_and_dedup(card_ranks=ranks_in_hand, slice_ix=2)[1]
+                except IndexError:
+                    next_card_rank_left = None
+                if ranks_in_hand.count(card_rank_left) == 4:
+                    return self.make_combination(cards=cards_in_hand)
+                if ranks_in_hand.count(card_rank_left) == 3:
+                    return self.make_combination(cards=cards_in_hand[:1]+[Card(rank=card_rank_left)]*3)
+                if ranks_in_hand.count(card_rank_left) == 2:
+                    if next_card_rank_left:
+                        if ranks_in_hand.count(next_card_rank_left) == 2: # Check potential full house
+                            return self.make_combination(cards=cards_in_hand[:1]+[Card(rank=card_rank_left)]*2+[Card(rank=next_card_rank_left)]*2)
+                    return self.make_combination(cards=cards_in_hand[:1]+[Card(rank=card_rank_left)]*2)
+                return self.make_combination(cards=cards_in_hand[:1]+cards_in_hand[-1:])
+        
+        ## BASE CASE -> NO JOKERS, CALL SUPER ##
+        else:
+            return super().get_highest_combination()
     
     def _perform_comparison_between_hands(self, other: Self, operation: str) -> bool:
         if operation not in ["greater-than", "less-than", "equal", "greater-than-or-equal", "less-than-or-equal"]:

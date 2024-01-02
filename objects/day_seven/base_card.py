@@ -18,8 +18,7 @@ class BaseCard:
     @abstractmethod
     def get_numerical_value(self) -> int:
         raise NotImplementedError("get_numerical_value() not implemented")
-        return len(self.possible_ranks.default_factory()) - (self.possible_ranks.default_factory().index(self.rank))
-    
+        
     @final
     def __repr__(self) -> str: return f"Card('{self.rank}')"
     

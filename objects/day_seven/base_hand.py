@@ -1,7 +1,6 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from functools import total_ordering
 from typing import Self, Type
-from abc import abstractmethod
 from objects.day_seven.part_one.card import Card
 from objects.day_seven.base_combination import BaseCombination
 
@@ -10,26 +9,32 @@ from objects.day_seven.base_combination import BaseCombination
 class BaseHand:
     cards: list[Card]
     make_combination: Type[BaseCombination]
-    possible_hands: list[str] = field(
-        init=False,
-        default_factory=lambda: [
-            "five-of-a-kind", 
-            "four-of-a-kind", 
-            "full-house", 
-            "three-of-a-kind", 
-            "two-pair", 
-            "one-pair", 
-            "high-card"
-        ]
-    )
     
     def __post_init__(self):
         if len(self.cards) != 5:
             raise ValueError("Provided a number of cards different than 5.")
     
-    @abstractmethod
     def get_highest_combination(self) -> str:
-        raise NotImplementedError("get_highest_combination() is not implemented.")
+        cards_in_hand = sorted([card for card in self.cards], key=lambda card: card.get_numerical_value())
+        ranks_in_hand = [card.get_rank() for card in cards_in_hand]
+        for card_rank in dict.fromkeys(ranks_in_hand):
+            if ranks_in_hand.count(card_rank) in [4, 5]: return self.make_combination([Card(card_rank)] * ranks_in_hand.count(card_rank)) # 4/5 of a kind
+            if ranks_in_hand.count(card_rank) == 3:
+                if ranks_in_hand.count(ranks_in_hand[-1]) == 2:
+                    return self.make_combination(cards=[Card(rank=card_rank)] * 3 + [Card(rank=ranks_in_hand[-1])] * 2) # Full house
+                else: return self.make_combination(cards=[Card(rank=card_rank)] * 3) # 3 of a kind
+            if ranks_in_hand.count(card_rank) == 2:
+                if ranks_in_hand.count(ranks_in_hand[-1]) == 3:
+                    return self.make_combination(cards=[Card(rank=card_rank)] * 2 + [Card(rank=ranks_in_hand[-1])] * 3) # Full house
+                # Check if any of the other ranks is present twice in the hand to determine combination value
+                remaining_card_ranks = ranks_in_hand[ranks_in_hand.index(card_rank)+2:]
+                ranks_excluding_current_card = filter(lambda rank: rank != card_rank, dict.fromkeys(ranks_in_hand))
+                for rank in ranks_excluding_current_card:
+                    if remaining_card_ranks.count(rank) == 2:
+                        return self.make_combination(cards=[Card(rank=card_rank)] * 2 + [Card(rank=rank)] * 2) # Double pair
+                return self.make_combination(cards=[Card(rank=card_rank)] * 2) # Single pair
+        max_rank = max(self.cards).get_rank()
+        return self.make_combination(cards=[Card(rank=max_rank)])
     
     def _perform_comparison_between_hands(self, other: Self, operation: str) -> bool:
         if operation not in ["greater-than", "less-than", "equal", "greater-than-or-equal", "less-than-or-equal"]:
@@ -62,7 +67,7 @@ class BaseHand:
     def __getitem__(self, index: int) -> str:
         if (not isinstance(index, int)) or (index > 4):
             raise ValueError("Incorrect index provided: number must be an int lower than 5.")
-        else: return self.cards[index].rank
+        else: return self.cards[index].get_rank()
 
     def __gt__(self, other: Self) -> bool:
         return self._perform_comparison_between_hands(other, operation="greater-than")
